@@ -27,17 +27,78 @@ main:
 
        //Feel free to remove any unnecesary commands
 	BL    LEDSETUP
-	MOV   r0, #6
-	BL    fib
-	BL    MorseDigit
+	BL    LEDOFF
+	MOV   r0, #23
+	BL    MultiDigitMorse
 
 	B     forever // after you program runs, it should enter this infinite loop
 
 
 
+
+DivisionByTen:
+    PUSH {LR}
+    PUSH {R4, R5, R6, R7}
+
+    MOV R7, #10
+
+    SUB R6, R0, R7
+
+    MOV R0, #0
+
+    loop:
+    MOV R7, #10
+    MUL R7, R0, R7
+    CMP R7, R6
+    BGT exit
+    ADD R0, #1
+    B loop
+
+    exit:
+    POP {R4, R5, R6, R7}
+    POP  {PC}
+
+
+MultiDigitMorse:
+    PUSH {LR}
+    PUSH {R4, R5, R6, R7}
+
+    MOV R7, #10
+    MOV R4, #0
+
+    div:
+    MOV  R6, R0
+    BL   DivisionByTen
+    MUL  R0, R0, R7
+    SUB  R5, R6, R0
+    BL   DivisionByTen
+    PUSH {R5}
+    ADD  R4, #1
+    CMP  R0, #0
+    BEQ  base
+    B    div
+
+
+    base:
+    CMP  R4, #0
+    BEQ  terminate
+    POP  {R0}
+    BL   MorseDigit
+    BL   DOT
+    BL   DOT
+    BL   DOT
+    SUB  R4, #1
+    B    base
+
+    terminate:
+    POP  {R4, R5, R6, R7}
+    POP  {PC}
+
+
+
 CASE1:
     PUSH  {LR}
-    PUSH  {R4, R5}
+    PUSH  {R4, R5, R6, R7}
     BL    LEDON
 	BL    DOT
 	BL    LEDOFF
@@ -58,12 +119,12 @@ CASE1:
 	BL    DASH
 	BL    LEDOFF
 	BL    DOT
-	POP   {R4, R5}
+	POP   {R4, R5, R6, R7}
 	POP   {PC}
 
 CASE2:
     PUSH  {LR}
-    PUSH  {R4, R5}
+    PUSH  {R4, R5, R6, R7}
     BL    LEDON
 	BL    DOT
 	BL    LEDOFF
@@ -84,12 +145,12 @@ CASE2:
 	BL    DASH
 	BL    LEDOFF
 	BL    DOT
-	POP   {R4, R5}
+	POP   {R4, R5, R6, R7}
 	POP   {PC}
 
 CASE3:
     PUSH  {LR}
-    PUSH  {R4, R5}
+    PUSH  {R4, R5, R6, R7}
     BL    LEDON
 	BL    DOT
 	BL    LEDOFF
@@ -110,7 +171,7 @@ CASE3:
 	BL    DASH
 	BL    LEDOFF
 	BL    DOT
-	POP   {R4, R5}
+	POP   {R4, R5, R6, R7}
 	POP   {PC}
 
 CASE1_HELP:
@@ -130,7 +191,7 @@ CASE3_HELP:
 
 CASE4:
     PUSH  {LR}
-    PUSH  {R4, R5}
+    PUSH  {R4, R5, R6, R7}
     BL    LEDON
 	BL    DOT
 	BL    LEDOFF
@@ -151,12 +212,12 @@ CASE4:
 	BL    DASH
 	BL    LEDOFF
 	BL    DOT
-	POP   {R4, R5}
+	POP   {R4, R5, R6, R7}
 	POP   {PC}
 
 CASE5:
     PUSH  {LR}
-    PUSH  {R4, R5}
+    PUSH  {R4, R5, R6, R7}
     BL    LEDON
 	BL    DOT
 	BL    LEDOFF
@@ -177,15 +238,13 @@ CASE5:
 	BL    DOT
 	BL    LEDOFF
 	BL    DOT
-	POP   {R4, R5}
+	POP   {R4, R5, R6, R7}
 	POP   {PC}
-
-
 
 
 MorseDigit:
     PUSH  {LR}
-    PUSH  {R4, R5}
+    PUSH  {R4, R5, R6, R7}
 
     CMP R0, #1
     BEQ CASE1_HELP
@@ -209,14 +268,14 @@ MorseDigit:
     BEQ CASE0_HELP
 
     end:
-    POP   {R4, R5}
+    POP   {R4, R5, R6, R7}
 	POP   {PC}
 
 
 
 CASE6:
     PUSH  {LR}
-    PUSH  {R4, R5}
+    PUSH  {R4, R5, R6, R7}
     BL    LEDON
 	BL    DASH
 	BL    LEDOFF
@@ -237,12 +296,12 @@ CASE6:
 	BL    DOT
 	BL    LEDOFF
 	BL    DOT
-	POP   {R4, R5}
+	POP   {R4, R5, R6, R7}
 	POP   {PC}
 
 CASE7:
     PUSH  {LR}
-    PUSH  {R4, R5}
+    PUSH  {R4, R5, R6, R7}
     BL    LEDON
 	BL    DASH
 	BL    LEDOFF
@@ -263,7 +322,7 @@ CASE7:
 	BL    DOT
 	BL    LEDOFF
 	BL    DOT
-	POP   {R4, R5}
+	POP   {R4, R5, R6, R7}
 	POP   {PC}
 
 CASE9_HELP:
@@ -278,7 +337,7 @@ CASE0_HELP:
 
 CASE8:
     PUSH  {LR}
-    PUSH  {R4, R5}
+    PUSH  {R4, R5, R6, R7}
     BL    LEDON
 	BL    DASH
 	BL    LEDOFF
@@ -299,12 +358,12 @@ CASE8:
 	BL    DOT
 	BL    LEDOFF
 	BL    DOT
-	POP   {R4, R5}
+	POP   {R4, R5, R6, R7}
 	POP   {PC}
 
 CASE9:
     PUSH  {LR}
-    PUSH  {R4, R5}
+    PUSH  {R4, R5, R6, R7}
     BL    LEDON
 	BL    DASH
 	BL    LEDOFF
@@ -325,12 +384,12 @@ CASE9:
 	BL    DOT
 	BL    LEDOFF
 	BL    DOT
-	POP   {R4, R5}
+	POP   {R4, R5, R6, R7}
 	POP   {PC}
 
 CASE0:
     PUSH  {LR}
-    PUSH  {R4, R5}
+    PUSH  {R4, R5, R6, R7}
     BL    LEDON
 	BL    DASH
 	BL    LEDOFF
@@ -351,7 +410,7 @@ CASE0:
 	BL    DASH
 	BL    LEDOFF
 	BL    DOT
-	POP   {R4, R5}
+	POP   {R4, R5, R6, R7}
 	POP   {PC}
 
 
@@ -360,8 +419,8 @@ CASE0:
 
 fib:
  	// Your code goes here!
- 	push {LR}
- 	PUSH {R4, R5}
+ 	PUSH {LR}
+ 	PUSH {R4, R5, R6, R7}
 
 
  	CMP R0, #0
@@ -390,7 +449,7 @@ fib:
  	MOV R0, #1
 
  	END:
- 	POP {R4, R5}
+ 	POP {R4, R5, R6, R7}
  	POP {PC}
 
 /*
@@ -400,7 +459,7 @@ fib:
 // Call this function first to set up the LED
 // You only need to call this once
 LEDSETUP:
-	PUSH  {R4, R5}    //To preserve R4 and R5
+	PUSH  {R4, R5, R6, R7}    //To preserve R4 and R5
 	LDR   R4, =twelve // Load the value 1 << 12
 	LDR   R5, =SCGC5
 	STR   R4, [R5]
@@ -412,45 +471,45 @@ LEDSETUP:
 	LDR   R4, =five
 	LDR   R5, =PDDRD
 	STR   R4, [R5]
-	POP   {R4, R5}
+	POP   {R4, R5, R6, R7}
 	BX    LR
 
 // The functions below are for you to use freely
 LEDON:
-	PUSH  {R4, R5}
+	PUSH  {R4, R5, R6, R7}
 	LDR   R4, =five
 	LDR   R5, =PCORD
 	STR   R4, [R5]
-	POP   {R4, R5}
+	POP   {R4, R5, R6, R7}
 	BX    LR
 
 LEDOFF:
-	PUSH  {R4, R5}
+	PUSH  {R4, R5, R6, R7}
 	LDR   R4, =five
 	LDR   R5, =PSORD
 	STR   R4, [R5]
-	POP   {R4, R5}
+	POP   {R4, R5, R6, R7}
 	BX    LR
 
 DASH:
     PUSH {LR}
-    PUSH {r4, r5}
+    PUSH {R4, R5, R6, R7}
     BL DOT
     BL DOT
     BL DOT
-    POP {r4, r5}
+    POP {R4, R5, R6, R7}
     POP {PC}
 
 
 DOT:
     PUSH  {LR}
-    PUSH  {r4, r5}
+    PUSH  {R4, R5, R6, R7}
     LDR   r0, =DOT_LENGTH
-    loop:
+    loopbody:
     SUB   r0, #1
     CMP   r0, #0
-    BNE   loop
-    POP   {r4, r5}
+    BNE   loopbody
+    POP   {R4, R5, R6, R7}
     POP   {PC}
 
 //wait forever
